@@ -1,0 +1,33 @@
+<h2>Flows</h2>
+
+<ul id="flows" ng-show="flows">
+  <li ng-repeat="flow in flows | orderByPriority | reverse | filter:{author: auth.user.id}">
+    <div>Name: {{flow.name}}</div>
+    <div>Inputs: {{flow.input}}</div>
+    <div>Request day: {{flow.requestDay}}</div>
+    <div>Output: {{flow.output}}</div>
+    <div>Summary day: {{flow.postDay}}</div></li>
+</ul>
+
+<form>
+  <label>Name this flow</label>
+  <input placeholder="Flow name" ng-model="newFlow.name">
+
+  <label>Who do you want an update from?</label>
+  <input placeholder="Input" ng-model="newFlow.input" type="email">
+
+  <label>Request an update every (Sunday = 0, Monday = 1, ...)</label>
+  <input type="number" max="6" min="0" name="requestDay" ng-model="newFlow.requestDay">
+
+  <label>Who do you want the compiled report sent to?</label>
+  <input placeholder="Output" ng-model="newFlow.output" type="email">
+
+  <label>Send the compiled updates to me every (Sunday = 0, Monday = 1, ...)</label>
+  <input type="number" max="6" min="0" name="postDay" ng-model="newFlow.postDay">
+
+  <!--<label>Time</label>
+  <input type="time" name="time" ng-model="newFlow.time">-->
+
+  <br /><br />
+  <button type="submit" ng-click="addFlow()">Add flow</button>
+</form>

@@ -240,5 +240,75 @@ StaticServlet.prototype.writeDirectoryIndex_ = function(req, res, path, files) {
   res.end();
 };
 
+// -----------------------------
+
+// Mandrill
+var mandrill = require('mandrill-api/mandrill');
+var mandrill_client = new mandrill.Mandrill('MhYflar4NJx7K24Bpri_3A');
+var raw_message = 'From: zelliottm@gmail.com\nTo: zelliottm@gmail.com\nSubject: Some Subject\n\nSome content.';
+var from_email = 'zelliottm@gmail.com';
+var from_name = 'Zack';
+var to = [
+'zelliottm@gmail.com'
+];
+var async = false;
+var ip_pool = 'Main Pool';
+// var send_at = '1994-10-07 12:12:12';
+var return_path_domain = null;
+
+// Moment
+var moment = require('moment');
+
+// Node cron
+var CronJob = require('cron').CronJob;
+
+// Firebase
+var Firebase = require('firebase');
+var ref = new Firebase('https://intense-heat-8637.firebaseio.com/flows');
+
+// var dailyQueue = [];
+
+// Every day build the daily queue of emails to send
+var buildDailyQueue = new CronJob('00 00 00 * * 0-6', function () {
+  var email_count = 0;
+
+  ref.on('value', function(snapshot) {
+    snapshot.forEach(function(data) {
+      if(moment().day() === data.val().requestDay) {
+        // dailyQueue.push({data.val().time: data.val() });
+        sendMessage();
+        email_count++;
+      }
+    });
+  }, function (errorObject) {
+    console.log('The read failed: ' + errorObject.code);
+  });
+
+  }, function () {
+    // This function is executed when the job stops
+    console.log('Today we sent: ' + email_count + ' emails');
+  },
+  true /* Start the job right now */
+);
+
+var sendMessage = function () {
+  mandrill_client.messages.sendRaw({'raw_message': raw_message, 'from_email': from_email, 'from_name': from_name, 'to': to, 'async': async, 'ip_pool': ip_pool, /*'send_at': send_at,*/ 'return_path_domain': return_path_domain}, function(result) {
+    console.log(result);
+    /*
+    [{
+    'email': 'recipient.email@example.com',
+    'status': 'sent',
+    'reject_reason': 'hard-bounce',
+    '_id': 'abc123abc123abc123abc123'
+  }]
+  */
+  }, function(e) {
+    // Mandrill returns the error as an object with name and message keys
+    console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+    // A mandrill error occurred: Unknown_Subaccount - No subaccount exists with the id 'customer-123'
+  });
+};
+
+
 // Must be last,
 main(process.argv);

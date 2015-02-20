@@ -15,6 +15,12 @@ angular.module('myApp.routes', ['ngRoute'])
          controller: 'ChatCtrl'
       });
 
+      $routeProvider.when('/flows', {
+        authRequired: true, // must authenticate before viewing this page
+        templateUrl: 'partials/flows.html',
+        controller: 'FlowsCtrl'
+      });
+
       $routeProvider.when('/account', {
          authRequired: true, // must authenticate before viewing this page
          templateUrl: 'partials/account.html',

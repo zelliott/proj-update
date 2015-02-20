@@ -20,6 +20,19 @@
             }
          }
       },
+      "flows": {
+        ".read": true,
+        "$flow": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['name'])",
+          "name": {
+            ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
       "users": {
          "$user": {
             ".read": "auth.uid === $user",

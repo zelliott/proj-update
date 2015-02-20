@@ -23,6 +23,24 @@ angular.module('myApp.controllers', [])
       };
    }])
 
+   .controller('FlowsCtrl', ['$scope', 'syncData', function($scope, syncData) {
+     $scope.newFlow = null;
+
+     // constrain number of messages by limit into syncData
+     // add the array into $scope.messages
+     $scope.flows = syncData('flows', 10);
+
+     // add new messages to the list
+     $scope.addFlow = function() {
+       console.log($scope.auth.user.id);
+       $scope.newFlow.author = $scope.auth.user.id;
+       if($scope.newFlow.name) {
+         $scope.flows.$add($scope.newFlow);
+         $scope.newFlow = null;
+       }
+     };
+   }])
+
    .controller('LoginCtrl', ['$scope', 'loginService', '$location', function($scope, loginService, $location) {
       $scope.email = null;
       $scope.pass = null;
